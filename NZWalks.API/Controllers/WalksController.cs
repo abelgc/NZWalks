@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NZWalks.API.CustomActionfilters;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
-using System.Threading.Tasks;
-using NZWalks.API.CustomActionfilters;
 using NZWalks.API.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace NZWalks.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WalksController : ControllerBase
     {
         private readonly IMapper mapper;
