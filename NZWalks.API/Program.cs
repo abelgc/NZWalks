@@ -11,6 +11,7 @@ using NZWalks.API.Mappings;
 using NZWalks.API.Repositories;
 using Serilog;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,26 @@ builder.Services.AddDbContext<NZWalksAuthDbContext>(options =>
 
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
+
+//Add AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+
+//Add Identity
+builder.Services.AddIdentityCore<IdentityUser>()
+    .AddRoles<IdentityRole>()
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("NZWalks")
+    .AddEntityFrameworkStores<NZWalksAuthDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(o =>
+{
+    o.Password.RequireDigit = false;
+    o.Password.RequireLowercase = false;
+    o.Password.RequireUppercase = false;
+    o.Password.RequireNonAlphanumeric = false;
+    o.Password.RequiredLength = 6;
+    o.Password.RequiredUniqueChars = 1;
+});
 
 //Add Autenthication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
