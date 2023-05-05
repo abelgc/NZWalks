@@ -15,7 +15,6 @@ namespace NZWalks.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDbContext dbContext;
@@ -46,6 +45,8 @@ namespace NZWalks.API.Controllers
 
         [HttpGet]
         [Route("api/[controller]/Db")]
+        [Authorize]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAllRegions()
         {
             try
@@ -75,7 +76,7 @@ namespace NZWalks.API.Controllers
 
                 logger.LogInformation($"Returned with data: {JsonSerializer.Serialize(regionsDomainModel)} in {nameof(this.GetAllRegions)} Method");
 
-               throw new Exception("Custom Exception");
+               //throw new Exception("Custom Exception");
 
                 return Ok(regionsDTO);
             }
@@ -88,7 +89,8 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpGet]
-        [Route("api/[controller]/Db/{id:Guid}")]
+        [Route("{id:Guid}")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetRegionById([FromRoute]Guid id)
         {
             //var region = dbContext.Regions.Find(id);
@@ -115,6 +117,8 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> CreateRegion([FromBody]AddRegionRequestDTO request)
         {
             if (ModelState.IsValid)
@@ -154,7 +158,8 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpPut]
-        [Route("api/[controller]/Db/{id:Guid}")]
+        [Route("Db/{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id, [FromBody]UpdateRegionRequestDTO request)
         {
             if (ModelState.IsValid)
@@ -201,7 +206,8 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpDelete]
-        [Route("api/[controller]/Db/{id:Guid}")]
+        [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer,Reader")]
         public async Task<IActionResult> DeleteRegion([FromRoute] Guid id)
         {
             //check if region exists

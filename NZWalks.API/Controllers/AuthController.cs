@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.DTO;
+using NZWalks.API.Repositories;
 
 namespace NZWalks.API.Controllers
 {
@@ -12,25 +13,27 @@ namespace NZWalks.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
+        private readonly ITokenRepository _tokenRepository;
 
-        public AuthController(UserManager<IdentityUser>userManager)
+        public AuthController(UserManager<IdentityUser>userManager, ITokenRepository tokenRepository)
         {
             this.userManager = userManager;
+            _tokenRepository = tokenRepository;
         }
 
         [HttpPost]
         [Route("Register")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterRequestDTO registerReques)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterRequestDTO registerRequest)
         {
-            var identityUser = new IdentityUser{UserName = registerReques.Username, Email = registerReques.Username};
+            var identityUser = new IdentityUser{UserName = registerRequest.Username, Email = registerRequest.Username};
 
-            var identityResult = await userManager.CreateAsync(identityUser, registerReques.Password);
+            var identityResult = await userManager.CreateAsync(identityUser, registerRequest.Password);
 
             if (identityResult.Succeeded)
             {
-                if (!registerReques.Roles.Any()) return BadRequest("Some register process went wrong");
+                if (!registerRequest.Roles.Any()) return BadRequest("Some register process went wrong");
                 //Add Roles to User
-                await userManager.AddToRolesAsync(identityUser, registerReques.Roles);
+                await userManager.AddToRolesAsync(identityUser, registerRequest.Roles);
                 if (identityResult.Succeeded)
                 {
                     return Ok("User registered, proceed to login");
@@ -57,16 +60,17 @@ namespace NZWalks.API.Controllers
 
                     if (roles.Any())
                     {
-                        var jwToken = "";
+                        var jwToken = _tokenRepository.CreateJWT(user, roles.ToList());
+
+                        var response = new LoginResponseDTO
+                        {
+                            JwtToken = jwToken
+                        };
+                        return Ok(response);
                     }
                 }
 
             }
-            
-
-            //if password exists get roles
-
-            //if roles not null create token and provide login response
 
             return BadRequest("Username or password incorrect");
         }

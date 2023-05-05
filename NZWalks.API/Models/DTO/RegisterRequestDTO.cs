@@ -4,11 +4,11 @@ namespace NZWalks.API.Models.DTO
 {
     public class RegisterRequestDTO
     {
-        [Required]
+        [Required(ErrorMessage = "User Name is required")]
         [DataType(DataType.EmailAddress)]
         public string Username { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
