@@ -55,28 +55,11 @@ namespace NZWalks.API.Controllers
                 // get data from db - domain models
                 var regionsDomainModel = await regionRepository.GetAllRegionsAsync();
 
-                // map those domain models to our dtos
-                //var regionsDTO = new List<RegionDTO>();
-
-                //foreach (var regionDomain in regionsDomainModel)
-                //{
-                //    regionsDTO.Add( new RegionDTO()
-                //    {
-                //        Id = regionDomain.Id,
-                //        Name = regionDomain.Name,
-                //        Code = regionDomain.Code,
-                //        RegionalImageUrl = regionDomain.RegionalImageUrl
-
-                //    });
-                //}
-                // return dtos
-
-                //Map domain model to DTO's with AutoMapper
                 var regionsDTO = mapper.Map<List<RegionDTO>>(regionsDomainModel); //Tdestinatiopn and source in brackets
 
                 logger.LogInformation($"Returned with data: {JsonSerializer.Serialize(regionsDomainModel)} in {nameof(this.GetAllRegions)} Method");
 
-               //throw new Exception("Custom Exception");
+               throw new Exception("This is the new Exception");
 
                 return Ok(regionsDTO);
             }
@@ -217,18 +200,6 @@ namespace NZWalks.API.Controllers
             {
                 return NotFound();
             }
-
-            //dbContext.Regions.Remove(regionDomainModel);
-            //await dbContext.SaveChangesAsync();
-
-            //return deleted region back
-
-            //var regionDTO = new RegionDTO
-            //{
-            //    Code = regionDomainModel.Code,
-            //    Name = regionDomainModel.Name,
-            //    RegionalImageUrl = regionDomainModel.RegionalImageUrl
-            //};
 
             var regionDTO = mapper.Map<RegionDTO>(regionDomainModel);
 
