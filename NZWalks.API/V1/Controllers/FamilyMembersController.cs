@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.DTO;
 
-namespace NZWalks.API.Controllers
+namespace NZWalks.API.V1.Controllers
 {
     //https://localhost:pornumber/api/students
 
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class FamilyMembersController : ControllerBase
     {
         //[HttpGet]
@@ -26,17 +27,17 @@ namespace NZWalks.API.Controllers
 
         //    return Ok(result);
         //}
-
+        [MapToApiVersion("1.0")]
         [HttpGet]
-        public IActionResult GetAllFamilyMembersApiVersion()
+        public IActionResult GetAllFamilyMembersApiVersionV1()
         {
             var members = FamilyMembersData.GetMembers();
 
-            var response = new List<FamilyMembersDTO>();
+            var response = new List<FamilyMembersDTOV1>();
 
             foreach (var member in members)
             {
-                response.Add(new FamilyMembersDTO{Id = member.Id, Name = member.Name});
+                response.Add(new FamilyMembersDTOV1{Id = member.Id, Name = member.Name});
             }
 
             return Ok(response);

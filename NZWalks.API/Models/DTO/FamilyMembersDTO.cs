@@ -8,4 +8,16 @@ namespace NZWalks.API.Models.DTO
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
     }
+
+    public class FamilyMembersDTOV1
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+
+    public class FamilyMembersDTOV2
+    {
+        public Guid Id { get; set; }
+        public string MemberName { get; set; } = string.Empty;
+    }
 }
